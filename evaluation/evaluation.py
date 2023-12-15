@@ -36,6 +36,7 @@ from octis.models.CTM import CTM
 from octis.dataset.dataset import Dataset
 from octis.evaluation_metrics.diversity_metrics import TopicDiversity
 from octis.evaluation_metrics.coherence_metrics import Coherence
+from octis.evaluation_metrics.classification_metrics import F1Score
 
 import gensim
 import gensim.corpora as corpora
@@ -505,11 +506,13 @@ class Trainer:
         """Prepare evaluation measures using OCTIS"""
         npmi = Coherence(texts=self.data.get_corpus(), topk=self.topk, measure="c_npmi")
         topic_diversity = TopicDiversity(topk=self.topk)
+        a_f1 = F1Score(self.data)
 
         # Define methods
         coherence = [(npmi, "npmi")]
         diversity = [(topic_diversity, "diversity")]
-        metrics = [(coherence, "Coherence"), (diversity, "Diversity")]
+        f1 = [(a_f1, "f1")]
+        metrics = [(coherence, "Coherence"), (diversity, "Diversity"), (f1, "F1")]
 
         return metrics
 
