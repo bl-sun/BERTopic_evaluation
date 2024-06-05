@@ -376,16 +376,14 @@ class Trainer:
 
         if self.model_name == "ETM":
             model = ETM(**params)
-            model.use_partitions = False
         elif self.model_name == "LDA":
             model = LDA(**params)
-            model.use_partitions = False
         elif self.model_name == "CTM":
             model = CTM(**params)
-            model.use_partitions = False
         elif self.model_name == "NMF":
             model = NMF(**params)
-            model.use_partitions = False
+
+        model.use_partitions = False
 
         start = time.time()
         output_tm = model.train_model(self.data)
@@ -506,13 +504,15 @@ class Trainer:
         """Prepare evaluation measures using OCTIS"""
         npmi = Coherence(texts=self.data.get_corpus(), topk=self.topk, measure="c_npmi")
         topic_diversity = TopicDiversity(topk=self.topk)
-        a_f1 = F1Score(self.data)
+        f1 = F1Score(self.data)
 
         # Define methods
-        coherence = [(npmi, "npmi")]
-        diversity = [(topic_diversity, "diversity")]
-        f1 = [(a_f1, "f1")]
-        metrics = [(coherence, "Coherence"), (diversity, "Diversity"), (f1, "F1")]
+
+        metrics = [
+            ([(npmi, "npmi")], "Coherence")
+            , ([(topic_diversity, "diversity")], "Diversity")
+            #, ([(f1, "f1")], "F1")
+            ]
 
         return metrics
 
